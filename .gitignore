@@ -31,11 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Mac ###
-.DS_Store
-
-### Environment ###
-.env
-application-local.properties
-application-secret.properties
