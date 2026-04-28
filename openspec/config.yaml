@@ -1,0 +1,28 @@
+schema: spec-driven
+
+context: |
+  Tech stack: Java 21, Spring Boot 3, Maven
+  Architecture: Layered (Controller → Service → WebClient)
+  Role: Backend middleware giữa Flutter frontend (CryptoPulse) và CoinGecko API
+  Port: 8080
+  Base package: com.cryptopulse.backend
+  
+  Conventions:
+  - Dùng WebClient (reactive) để gọi CoinGecko, không dùng RestTemplate
+  - Dùng Lombok để giảm boilerplate
+  - Cache response từ CoinGecko bằng @Cacheable (Caffeine)
+  - Tất cả endpoint đều có prefix /api
+  - CORS bật cho tất cả origins trong môi trường dev
+  - Tên endpoint dùng kebab-case (ví dụ: /market-chart thay vì /marketChart)
+  
+  CoinGecko endpoints đang dùng:
+  - GET /coins/markets — danh sách top coins
+  - GET /coins/{id}/market_chart — lịch sử giá
+  - GET /coins/{id} — chi tiết một coin
+
+# Per-artifact rules (optional)
+# rules:
+#   proposal:
+#     - Keep proposals under 500 words
+#   tasks:
+#     - Break tasks into chunks of max 2 hours
