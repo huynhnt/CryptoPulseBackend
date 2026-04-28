@@ -10,7 +10,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
+import java.util.List;
+import jakarta.persistence.Transient;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.trading.utils.SparklineDeserializer;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -97,4 +100,9 @@ public class Coin {
 
     @JsonProperty("last_updated")
     private Date lastUpdated;
+
+    @Transient
+    @JsonProperty("sparkline_in_7d")
+    @JsonDeserialize(using = SparklineDeserializer.class)
+    private List<Double> sparkline;
 }
