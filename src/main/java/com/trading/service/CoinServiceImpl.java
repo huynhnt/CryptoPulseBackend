@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.modal.Coin;
 import com.trading.repository.CoinRepository;
+import com.trading.response.CoinGeckoSearchItem;
+import com.trading.response.CoinGeckoSearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -24,6 +26,7 @@ import com.trading.config.CacheConfig;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -169,21 +172,34 @@ public class CoinServiceImpl implements CoinService{
     }
 
     @Override
-    public String searchCoin(String keyword) {
-        String url = baseUrl + "/search?query="+keyword;
+    @Cacheable(value = "searchKeywordCache", key = "#keyword")
+    public List<Coin> searchCoin(String keyword) throws Exception {
+        String searchUrl = baseUrl + "/search?query=" + keyword;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-cg-demo-api-key", API_KEY);
-
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(searchUrl, HttpMethod.GET, entity, String.class);
 
-        System.out.println(response.getBody());
+        CoinGeckoSearchResponse searchResponse = objectMapper.readValue(response.getBody(), CoinGeckoSearchResponse.class);
+        List<CoinGeckoSearchItem> items = searchResponse.getCoins();
+        
+        if (items == null || items.isEmpty()) {
+            return List.of();
+        }
 
-        return response.getBody();
+        // Limit to 10 items
+        List<CoinGeckoSearchItem> topItems = items.stream().limit(10).collect(Collectors.toList());
+        String ids = topItems.stream().map(CoinGeckoSearchItem::getId).collect(Collectors.joining(","));
+
+        // Call markets API
+        String marketsUrl = baseUrl + "/coins/markets?vs_currency=usd&ids=" + ids + "&sparkline=true";
+        ResponseEntity<String> marketsResponse = restTemplate.exchange(marketsUrl, HttpMethod.GET, entity, String.class);
+        
+        List<Coin> coins = objectMapper.readValue(marketsResponse.getBody(), new TypeReference<List<Coin>>() {});
+        return coins;
     }
 
     @Override

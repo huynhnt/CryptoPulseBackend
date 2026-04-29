@@ -43,12 +43,9 @@ public class CoinController {
 
 
     @GetMapping("/search")
-    ResponseEntity<JsonNode> searchCoin(@RequestParam("q") String keyword) throws JsonProcessingException {
-        String coin=coinService.searchCoin(keyword);
-        JsonNode jsonNode = objectMapper.readTree(coin);
-
-        return ResponseEntity.ok(jsonNode);
-
+    ResponseEntity<List<Coin>> searchCoin(@RequestParam("q") String keyword) throws Exception {
+        List<Coin> coins = coinService.searchCoin(keyword);
+        return ResponseEntity.ok(coins);
     }
     @GetMapping("/top50")
     ResponseEntity<JsonNode> getTop50CoinByMarketCapRank() throws JsonProcessingException {
