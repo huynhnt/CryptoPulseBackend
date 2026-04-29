@@ -23,8 +23,10 @@ public class CoinController {
     private ObjectMapper objectMapper;
 
     @GetMapping
-    ResponseEntity<List<Coin>> getCoinList(@RequestParam("page") int page) throws Exception {
-        List<Coin> coins=coinService.getCoinList(page);
+    ResponseEntity<List<Coin>> getCoinList(
+            @RequestParam("page") int page,
+            @RequestParam(value = "per_page", defaultValue = "10") int perPage) throws Exception {
+        List<Coin> coins = coinService.getCoinList(page, perPage);
         return new ResponseEntity<>(coins, HttpStatus.OK);
     }
 

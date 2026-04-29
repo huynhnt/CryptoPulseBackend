@@ -44,9 +44,9 @@ public class CoinServiceImpl implements CoinService{
 
 
     @Override
-    @Cacheable(value = CacheConfig.COINS_PAGE_CACHE, key = "#page")
-    public List<Coin> getCoinList(int page) throws Exception {
-        String url = baseUrl + "/coins/markets?vs_currency=usd&per_page=10&page="+page+"&sparkline=true";
+    @Cacheable(value = CacheConfig.COINS_PAGE_CACHE, key = "#page + '-' + #perPage")
+    public List<Coin> getCoinList(int page, int perPage) throws Exception {
+        String url = baseUrl + "/coins/markets?vs_currency=usd&per_page=" + perPage + "&page=" + page + "&sparkline=true";
         log.info("Fetching data from CoinGecko API for: {}", url);
 
 
