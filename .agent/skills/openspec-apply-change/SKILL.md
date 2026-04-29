@@ -56,7 +56,7 @@ Implement tasks from an OpenSpec change.
    - Error or blocker encountered → report and wait for guidance
 
 6. **On completion or pause, show status**
-
+   - **Crucial**: Always remind the user to perform a `git commit` to save their progress, and suggest an appropriate commit message.
 **Guardrails**
 - Keep going through tasks until done or blocked
 - Always read context files before starting

@@ -79,6 +79,7 @@ Implement tasks from an OpenSpec change.
    - Overall progress: "N/M tasks complete"
    - If all done: suggest archive
    - If paused: explain why and wait for guidance
+   - **Crucial**: Always remind the user to perform a `git commit` to save their progress, and suggest an appropriate commit message.
 
 **Output During Implementation**
 
@@ -109,6 +110,10 @@ Working on task 4/7: <task description>
 ...
 
 All tasks complete! You can archive this change with `/opsx:archive`.
+
+**Git Commit Reminder:**
+Don't forget to commit your changes! Here is a suggested commit message:
+`feat: implement <change-name>`
 ```
 
 **Guardrails**

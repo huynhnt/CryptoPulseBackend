@@ -18,6 +18,9 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
+import org.springframework.cache.annotation.Cacheable;
+import com.trading.config.CacheConfig;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -33,11 +36,15 @@ public class CoinServiceImpl implements CoinService{
     @Value("${coingecko.api.key}")
     private String API_KEY;
 
+    @Value("${coingecko.api.baseUrl}")
+    private String baseUrl;
+
 
 
     @Override
+    @Cacheable(value = CacheConfig.COINS_PAGE_CACHE, key = "#page")
     public List<Coin> getCoinList(int page) throws Exception {
-        String url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=10&page="+page+"&sparkline=true";
+        String url = baseUrl + "/coins/markets?vs_currency=usd&per_page=10&page="+page+"&sparkline=true";
 
 
         RestTemplate restTemplate = new RestTemplate();
@@ -64,8 +71,9 @@ public class CoinServiceImpl implements CoinService{
     }
 
     @Override
+    @Cacheable(value = CacheConfig.COIN_CHART_CACHE, key = "#coinId + '-' + #days")
     public String getMarketChart(String coinId, int days) throws Exception {
-        String url = "https://api.coingecko.com/api/v3/coins/"+coinId+"/market_chart?vs_currency=usd&days="+days;
+        String url = baseUrl + "/coins/"+coinId+"/market_chart?vs_currency=usd&days="+days;
 
         RestTemplate restTemplate = new RestTemplate();
         try {
@@ -100,11 +108,12 @@ public class CoinServiceImpl implements CoinService{
     }
 
     @Override
+    @Cacheable(value = CacheConfig.COIN_DETAIL_CACHE, key = "#coinId")
     public String getCoinDetails(String coinId) throws JsonProcessingException {
 
-        String baseUrl ="https://api.coingecko.com/api/v3/coins/"+coinId;
+        String url = baseUrl + "/coins/"+coinId;
 
-        System.out.println("------------------ get coin details base url "+baseUrl);
+        System.out.println("------------------ get coin details base url "+url);
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-cg-demo-api-key", API_KEY);
 
@@ -112,7 +121,7 @@ public class CoinServiceImpl implements CoinService{
 
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
 //        Coin coins = objectMapper.readValue(response.getBody(), new TypeReference<>() {
 //        });
@@ -156,7 +165,7 @@ public class CoinServiceImpl implements CoinService{
 
     @Override
     public String searchCoin(String keyword) {
-        String baseUrl ="https://api.coingecko.com/api/v3/search?query="+keyword;
+        String url = baseUrl + "/search?query="+keyword;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-cg-demo-api-key", API_KEY);
@@ -165,7 +174,7 @@ public class CoinServiceImpl implements CoinService{
 
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
         System.out.println(response.getBody());
 
@@ -173,8 +182,9 @@ public class CoinServiceImpl implements CoinService{
     }
 
     @Override
+    @Cacheable(value = CacheConfig.COINS_PAGE_CACHE, key = "'top50'")
     public String getTop50CoinsByMarketCapRank() {
-        String url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&page=1&per_page=50";
+        String url = baseUrl + "/coins/markets?vs_currency=usd&page=1&per_page=50";
 
         RestTemplate restTemplate = new RestTemplate();
         try {
@@ -197,7 +207,7 @@ public class CoinServiceImpl implements CoinService{
 
     @Override
     public String getTreadingCoins() {
-        String url = "https://api.coingecko.com/api/v3/search/trending";
+        String url = baseUrl + "/search/trending";
 
         RestTemplate restTemplate = new RestTemplate();
         try {
