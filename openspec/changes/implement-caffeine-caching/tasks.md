@@ -22,3 +22,8 @@
 - [x] 4.1 Thêm thuộc tính `coingecko.api.baseUrl=https://api.coingecko.com/api/v3` vào file `application.properties` (hoặc `application.yml`).
 - [x] 4.2 Trong `CoinServiceImpl`, dùng `@Value("${coingecko.api.baseUrl}")` để lấy giá trị base URL.
 - [x] 4.3 Cập nhật tất cả các URL hardcode trong `CoinServiceImpl` để sử dụng biến `baseUrl`.
+
+## 5. Thêm Logging theo dõi Cache
+
+- [x] 5.1 Sử dụng `@Slf4j` (hoặc `LoggerFactory`) trong `CoinServiceImpl`.
+- [x] 5.2 Thêm các câu lệnh `log.info("Fetching data from CoinGecko API for: ...")` vào bên trong thân các hàm `@Cacheable` để theo dõi khi nào thực sự gọi API (Cache Miss) và khi nào lấy từ bộ nhớ đệm (Cache Hit).

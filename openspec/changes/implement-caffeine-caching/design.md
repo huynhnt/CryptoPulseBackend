@@ -23,7 +23,7 @@
   - `coin_chart` (TTL 5 phút): Cho dữ liệu market chart.
   - `coin_detail` (TTL 1 phút): Cho chi tiết đồng coin.
 - **Tách Base URL API**: Di chuyển chuỗi `https://api.coingecko.com/api/v3` vào file cấu hình (ví dụ `application.properties` thông qua annotation `@Value` hoặc `application.yml`) để quản lý tập trung và tránh lặp code (DRY - Don't Repeat Yourself) bên trong `CoinServiceImpl`.
-
+- **Cơ chế theo dõi Cache (Logging)**: Do Spring AOP sẽ tự động bỏ qua việc thực thi hàm nếu có Cache Hit, nên việc đặt lệnh log bên trong thân hàm của `CoinServiceImpl` sẽ đóng vai trò như một bộ kiểm tra Cache Miss. Nếu log "Fetching data từ API..." hiện lên nghĩa là Cache Miss. Nếu không hiện nghĩa là lấy thành công từ Cache.
 ## Risks / Trade-offs
 
 - **Dữ liệu trễ nhịp (Stale Data)**: Trade-off lớn nhất là người dùng có thể thấy giá chậm tối đa 1 phút. -> **Mitigation**: Đối với một Dashboard theo dõi thị trường thông thường, độ trễ 1 phút là con số lý tưởng để tối ưu, không ảnh hưởng lớn đến trải nghiệm người dùng so với rủi ro trắng trang do 429.

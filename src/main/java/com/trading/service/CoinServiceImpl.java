@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import lombok.extern.slf4j.Slf4j;
 
 
 import org.springframework.cache.annotation.Cacheable;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CoinServiceImpl implements CoinService{
     @Autowired
     private CoinRepository coinRepository;
@@ -45,6 +47,7 @@ public class CoinServiceImpl implements CoinService{
     @Cacheable(value = CacheConfig.COINS_PAGE_CACHE, key = "#page")
     public List<Coin> getCoinList(int page) throws Exception {
         String url = baseUrl + "/coins/markets?vs_currency=usd&per_page=10&page="+page+"&sparkline=true";
+        log.info("Fetching data from CoinGecko API for: {}", url);
 
 
         RestTemplate restTemplate = new RestTemplate();
@@ -74,6 +77,7 @@ public class CoinServiceImpl implements CoinService{
     @Cacheable(value = CacheConfig.COIN_CHART_CACHE, key = "#coinId + '-' + #days")
     public String getMarketChart(String coinId, int days) throws Exception {
         String url = baseUrl + "/coins/"+coinId+"/market_chart?vs_currency=usd&days="+days;
+        log.info("Fetching data from CoinGecko API for: {}", url);
 
         RestTemplate restTemplate = new RestTemplate();
         try {
@@ -112,6 +116,7 @@ public class CoinServiceImpl implements CoinService{
     public String getCoinDetails(String coinId) throws JsonProcessingException {
 
         String url = baseUrl + "/coins/"+coinId;
+        log.info("Fetching data from CoinGecko API for: {}", url);
 
         System.out.println("------------------ get coin details base url "+url);
         HttpHeaders headers = new HttpHeaders();
@@ -185,6 +190,7 @@ public class CoinServiceImpl implements CoinService{
     @Cacheable(value = CacheConfig.COINS_PAGE_CACHE, key = "'top50'")
     public String getTop50CoinsByMarketCapRank() {
         String url = baseUrl + "/coins/markets?vs_currency=usd&page=1&per_page=50";
+        log.info("Fetching data from CoinGecko API for: {}", url);
 
         RestTemplate restTemplate = new RestTemplate();
         try {
