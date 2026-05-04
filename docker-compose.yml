@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  cryptopulse-api:
+    image: tienhuynh/cryptopulse-backend:latest
+    container_name: cryptopulse-api
+    restart: unless-stopped
+
+    ports:
+      - "8088:8088"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://192.168.9.68:3306/trading?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: trading
+      SPRING_DATASOURCE_PASSWORD: adminth102

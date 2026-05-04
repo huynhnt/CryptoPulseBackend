@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.trading</groupId>
-    <artifactId>Trading-Backend</artifactId>
+    <artifactId>CryptoPulseBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Trading-Backend</name>
-    <description>Trading-Backend</description>
+    <name>CryptoPulseBackend</name>
+    <description>CryptoPulseBackend</description>
     <url/>
     <licenses>
         <license/>
